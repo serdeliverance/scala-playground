@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   object V {
-    val catsEffectVersion = "3.3.11"
+    val catsEffectVersion = "3.4.8"
     val circeVersion = "0.14.1"
     val circeGenericsExtras = "0.14.1"
     val postgres = "42.3.4"
