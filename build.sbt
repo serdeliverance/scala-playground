@@ -26,5 +26,10 @@ lazy val skunkDemo = project
     name := "scala-playground",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := scala3Version,
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(
+      catsEffect,
+      skunk,
+      logbackClassic,
+      log4cats
+    )
   )
