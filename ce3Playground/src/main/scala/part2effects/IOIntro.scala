@@ -45,9 +45,22 @@ object IOIntro:
     def asUnit[A](ioa: IO[A]): IO[Unit] =
         ioa.as(())
 
+    def asUnit_v2[A](ioa: IO[A]): IO[Unit] =
+        ioa.void // same - encouraged
+
+    // 6 - fix stack recursion
+    def sum(n: Int): Int =
+        if (n <= 0) 0
+        else n + sum(n - 1)
+
+    def sumIO(n: Int): IO[Int] =
+        if (n <= 0) IO.pure(0)
+        else
+            for
+                lastNumber <- IO.pure(n)
+                prevSum <- sumIO(n - 1)
+            yield prevSum + lastNumber
+        
     @main def run: Unit =
         import cats.effect.unsafe.implicits.global
-        forever_v3(IO {
-            println("forever!")
-            Thread.sleep(100)
-        }).unsafeRunSync()
+        println(sumIO(20000000).unsafeRunSync())
