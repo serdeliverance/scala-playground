@@ -5,6 +5,7 @@ import scala.util.Random
 import scala.concurrent.Future
 import cats.effect.IO
 import cats.instances.future
+import scala.util.Try
 
 
 object IOTraversal extends IOApp.Simple:
@@ -52,10 +53,14 @@ object IOTraversal extends IOApp.Simple:
     /**
       * Exercises
       */
-      def sequence[A](listOfIOs: List[IO[A]]): IO[List[A]] = ???
+      def sequence[A](listOfIOs: List[IO[A]]): IO[List[A]] =
+        val listTraverse_v2 = Traverse[List]
+        listTraverse_v2.traverse(listOfIOs)(identity)
+
 
       // hard version
-      def sequence_v2[F[_] : Traverse, A](listOfIOs: F[IO[A]]): IO[F[A]] = ???
+      def sequence_v2[F[_] : Traverse, A](listOfIOs: F[IO[A]]): IO[F[A]] =
+        Traverse[F].traverse(listOfIOs)(identity)
 
       // parallel version
       def parSequence[A](listOfIOs: List[IO[A]]): IO[List[A]] = ???
@@ -64,4 +69,12 @@ object IOTraversal extends IOApp.Simple:
       def parSequence_v2[F[_]: Traverse, A](listOfIOs: F[IO[A]]): IO[F[A]] = ???
 
     override def run: IO[Unit] =
-        parallelSingleIO.map(_.sum).debugLog.void
+        // parallelSingleIO.map(_.sum).debugLog.void
+
+        // Solution ex1
+        val ios = (1 to 5).map(IO.pure(_)).toList
+        sequence(ios).map(println).void
+
+        // Solution ex2
+        // val listOfThings = (1 to 5).map(IO.pure(_)).toList
+        // sequence_v2[List, Int](listOfThings).map(println).void
